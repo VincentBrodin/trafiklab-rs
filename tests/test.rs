@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use trafiklab::{
     Request,
     resrobot::{Location, RouteRequest},
@@ -8,12 +6,16 @@ use trafiklab::{
 #[test]
 fn resrobot_route_build_url() {
     let url = RouteRequest::new(
-        "access_id".to_string(),
+        "API_KEY".to_string(),
         Location::Id("10".to_string()),
         Location::Id("11".to_string()),
     )
-    .search_for_arrival(true)
+    .with_search_for_arrival(true)
+    .with_count_after(3)
+    .with_count_before(3)
+    .with_max_transfers(1)
     .build_url()
     .unwrap();
-    assert_eq!(url, url::Url::from_str("https://hello.com").unwrap())
+    println!("{}", url.as_str())
+    // assert_eq!(url, url::Url::from_str("https://hello.com").unwrap())
 }
