@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, Utc};
+use chrono::Utc;
 
 use crate::Request;
 use crate::resrobot::{Language, Location};
@@ -69,17 +69,19 @@ impl Request for RouteRequest {
         async move { Ok("test".to_string()) }
     }
 
-    fn build_url(self) -> Result<reqwest::Url, crate::Error> {
-        let url = reqwest::Url::parse_with_params(
-            "https://api.resrobot.se/v2.1/trip",
-            &[
-                ("format", "json"),
-                ("accessId", &self.access_id),
-                ("lang", &self.language.to_string()),
-                ("orign", &self.origin.to_string()),
-                ("dest", &self.destination.to_string()),
-            ],
-        )?;
+    fn build_url(&self) -> Result<reqwest::Url, crate::Error> {
+        // Gotten from https://www.trafiklab.se/api/our-apis/resrobot-v21/route-planner/
+        const PARAM_COUNT: usize = 14;
+        let mut params: Vec<(&str, &str)> = Vec::with_capacity(PARAM_COUNT);
+        params.push(("format", "json"));
+        params.push(("accessId", &self.access_id));
+        let lang = self.language.to_string();
+        params.push(("lang", &lang));
+        let origin = self.origin.to_string();
+        params.push(("orign", &origin));
+        let dest = self.origin.to_string();
+        params.push(("dest", &dest));
+        let url = reqwest::Url::parse_with_params("https://api.resrobot.se/v2.1/trip", params)?;
         Ok(url)
     }
 }

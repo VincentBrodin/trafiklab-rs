@@ -3,6 +3,14 @@ name = "trafiklab"
 version = "0.1.0"
 edition = "2024"
 
+
+[features]
+stress = []
+resrobot = []
+
+[build]
+features = ["stress","resrobot"]
+
 [dependencies]
 chrono = "0.4"
 reqwest = "0.12"

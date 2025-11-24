@@ -1,3 +1,4 @@
+#[cfg(feature = "resrobot")]
 pub mod resrobot;
 
 #[derive(thiserror::Error, Debug)]
@@ -10,6 +11,6 @@ pub enum Error {
 
 pub trait Request {
     type Output;
-    fn build_url(self) -> Result<reqwest::Url, self::Error>;
+    fn build_url(&self) -> Result<reqwest::Url, self::Error>;
     fn send(self) -> impl Future<Output = Result<Self::Output, self::Error>> + Send;
 }
