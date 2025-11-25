@@ -1,7 +1,11 @@
 mod request;
-use std::fmt::{Display, Write};
+mod response;
+mod response_raw;
+use std::fmt::Display;
 
-pub use request::RouteRequest;
+pub use request::*;
+pub use response::*;
+pub use response_raw::*;
 
 #[derive(Default)]
 pub enum Language {
@@ -10,7 +14,7 @@ pub enum Language {
     English,
     German,
 }
-
+// Comment
 impl Display for Language {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -21,14 +25,18 @@ impl Display for Language {
     }
 }
 
+#[derive(Debug)]
 pub struct Coordinate {
-    pub latitude: f32,
-    pub longitude: f32,
+    pub latitude: f64,
+    pub longitude: f64,
 }
 
-impl Display for Coordinate {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!("{:.6}+{:.6}", self.latitude, self.longitude))
+impl From<(f64, f64)> for Coordinate {
+    fn from(value: (f64, f64)) -> Self {
+        Self {
+            latitude: value.0,
+            longitude: value.1,
+        }
     }
 }
 
@@ -37,11 +45,22 @@ pub enum Location {
     Coordinate(Coordinate),
 }
 
-impl Display for Location {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl Location {
+    pub(crate) fn as_query_params(&self, prefix: &str) -> Vec<(String, String)> {
         match self {
-            Location::Id(id) => f.write_str(id),
-            Location::Coordinate(coordinate) => f.write_str(&coordinate.to_string()),
+            Location::Id(id) => vec![(format!("{prefix}Id"), id.clone())],
+            Location::Coordinate(coordinate) => {
+                vec![
+                    (
+                        format!("{prefix}CoordLat"),
+                        format!("{:.6}", coordinate.latitude),
+                    ),
+                    (
+                        format!("{prefix}CoordLong"),
+                        format!("{:.6}", coordinate.longitude),
+                    ),
+                ]
+            }
         }
     }
 }

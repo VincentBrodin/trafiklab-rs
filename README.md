@@ -7,6 +7,36 @@ This project aims to provide a clean, async, and well-typed Rust interface to al
 > If this SDK is something you're interested in using, or if you want to help get it up and running sooner **please consider contributing!**  
 > Issues, pull requests, and suggestions are all highly appreciated.
 
+## Usage
+
+### GTFS Svergie 2
+> [!NOTE]
+> Cooming soon.
+
+### GTFS Regional 
+> [!NOTE]
+> Cooming soon.
+
+### GTFS Sweden 3 
+> [!NOTE]
+> Cooming soon.
+
+### SL 
+> [!NOTE]
+> Cooming soon.
+
+
+### ResRobot
+**Route planner**
+```rust
+let res = trafiklab::resrobot::RouteRequest::new(
+    "API_KEY".into(),
+    Location::Id("740000001".to_string()),
+    Location::Id("740000003".into()),
+)
+.send()
+.await?;
+```
 
 ## Roadmap
 **Current Endpoint: ResRobot Route planner**
